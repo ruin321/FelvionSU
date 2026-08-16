@@ -91,6 +91,9 @@ void on_boot_completed(void)
 	pr_info("on_boot_completed!\n");
 	track_throne(true);
 	kthread_run(ksu_unhook_setgroups, NULL, "kthread");
+#ifdef CONFIG_KSU_SUSFS
+	susfs_start_sdcard_monitor_fn();
+#endif // #ifdef CONFIG_KSU_SUSFS
 }
 
 static ssize_t (*orig_read)(struct file *, char __user *, size_t, loff_t *);

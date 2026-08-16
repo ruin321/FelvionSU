@@ -1,3 +1,12 @@
+#ifdef CONFIG_KSU_SUSFS
+extern struct work_struct susfs_extra_works;
+static inline void ksu_handle_extra_susfs_work(void)
+{
+	if (!work_pending(&susfs_extra_works))
+		schedule_work(&susfs_extra_works);
+}
+#endif // #ifdef CONFIG_KSU_SUSFS
+
 static bool ksu_kernel_umount_enabled __read_mostly = true;
 
 static int kernel_umount_feature_get(u64 *value)
@@ -52,13 +61,6 @@ static inline int ksu_handle_umount(struct cred *new, const struct cred *old)
 	uid_t new_uid = ksu_get_uid_t(new->uid);
 	uid_t old_uid = ksu_get_uid_t(old->uid);
 
-	if (!ksu_kernel_umount_enabled)
-		return 0;
-
-	// if there isn't any module mounted, just ignore it!
-	if (!ksu_module_mounted)
-		return 0;
-
 	// There are 6 scenarios:
 	// 1. Normal app: zygote -> appuid
 	// 2. Isolated process forked from zygote: zygote -> isolated_process
@@ -81,20 +83,33 @@ static inline int ksu_handle_umount(struct cred *new, const struct cred *old)
 		pr_info("handle umount ignore non zygote child: %d\n", current->pid);
 		return 0;
 	}
-	// umount the target mnt
-	pr_info("handle umount for uid: %d, pid: %d\n", new_uid, current->pid);
 
-	const struct cred *saved = override_creds(ksu_cred);
+	// this is a zygote spawned app process; the umount itself is optional, it
+	// only happens when the feature is on and we actually have module mounts.
+	if (ksu_kernel_umount_enabled && ksu_module_mounted) {
+		// umount the target mnt
+		pr_info("handle umount for uid: %d, pid: %d\n", new_uid, current->pid);
 
-	struct mount_entry *entry;
-	down_read(&mount_list_lock);
-	list_for_each_entry (entry, &mount_list, list) {
-		pr_info("%s: unmounting: %s flags: 0x%x\n", __func__, entry->umountable, entry->flags);
-		try_umount(entry->umountable, entry->flags);
+		const struct cred *saved = override_creds(ksu_cred);
+
+		struct mount_entry *entry;
+		down_read(&mount_list_lock);
+		list_for_each_entry (entry, &mount_list, list) {
+			pr_info("%s: unmounting: %s flags: 0x%x\n", __func__, entry->umountable, entry->flags);
+			try_umount(entry->umountable, entry->flags);
+		}
+		up_read(&mount_list_lock);
+
+		revert_creds(saved);
 	}
-	up_read(&mount_list_lock);
 
-	revert_creds(saved);
+#ifdef CONFIG_KSU_SUSFS
+	// Mark proc for susfs hiding and trigger sus_path_loop. Must be independent of
+	// ksu_kernel_umount_enabled/ksu_module_mounted to avoid breaking hiding
+	// when umount is disabled or no module is mounted.
+	susfs_set_current_proc_umounted();
+	ksu_handle_extra_susfs_work();
+#endif // #ifdef CONFIG_KSU_SUSFS
 
 	return 0;
 }
