@@ -1,3 +1,5 @@
+#include <linux/workqueue.h>
+
 static const char KERNEL_SU_RC[] =
 	"\n"
 
@@ -369,6 +371,41 @@ static bool is_init_rc(struct file *fp)
 	return true;
 }
 
+/*
+ * Some devices (notably MediaTek/MIUI) read init.rc before the SELinux
+ * policy has been loaded. Applying the rules at that point fails because
+ * the policy database is still empty, leaving the ksu domain undefined and
+ * the ksud exec services unable to start. Poll until a known context can be
+ * resolved, then apply the rules from process context.
+ */
+static bool ksu_selinux_policy_ready(void)
+{
+	u32 sid;
+
+	return security_secctx_to_secid(INIT_CONTEXT, strlen(INIT_CONTEXT), &sid) == 0;
+}
+
+static void ksu_apply_rules_work_fn(struct work_struct *work);
+
+static DECLARE_DELAYED_WORK(ksu_apply_rules_work, ksu_apply_rules_work_fn);
+
+static void ksu_apply_rules_work_fn(struct work_struct *work)
+{
+	static int retries;
+
+	(void)work;
+
+	if (!ksu_selinux_policy_ready() && retries++ < 60) {
+		schedule_delayed_work(&ksu_apply_rules_work, msecs_to_jiffies(500));
+		return;
+	}
+
+	pr_info("KernelSU: applying sepolicy rules after policy load (retries: %d)\n", retries);
+	apply_kernelsu_rules();
+	cache_sid();
+	setup_ksu_cred();
+}
+
 static noinline void ksu_install_rc_hook(struct file *file)
 {
 	if (!is_init_rc(file)) {
@@ -384,12 +421,17 @@ static noinline void ksu_install_rc_hook(struct file *file)
 	}
 	rc_hooked = true;
 
-	// since we already have domains, selinux is initialized, we can apply rules and shit
+	// init.rc is read before the SELinux policy is loaded on some devices.
+	// Defer rule application until the policy database is ready.
 	// https://github.com/LineageOS/android_system_core_old/blob/ecbcdafc3/init/init.cpp#L669
 	pr_info("%s: init.rc second stage, fp: 0x%lx \n", __func__, (uintptr_t)file);
-	apply_kernelsu_rules();
-	cache_sid();
-	setup_ksu_cred();
+
+	/*
+	 * The policy may not be loaded yet; ksu_apply_rules_work_fn retries
+	 * until it is. This runs well before the post-fs-data exec below.
+	 */
+	schedule_delayed_work(&ksu_apply_rules_work, msecs_to_jiffies(200));
+
 	ksu_grab_init_session_keyring();
 
 	// now we can sure that the init process is reading
