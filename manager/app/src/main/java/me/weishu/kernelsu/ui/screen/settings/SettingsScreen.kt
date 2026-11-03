@@ -60,6 +60,7 @@ fun SettingPager(
         onSetEnableWebDebugging = viewModel::setEnableWebDebugging,
         onSetAutoJailbreak = viewModel::setAutoJailbreak,
         onSetUseSoftReboot = viewModel::setUseSoftReboot,
+        onSetLiquidGlass = viewModel::setLiquidGlass,
         onOpenAbout = { navigator.push(Route.About) },
     )
 
