@@ -49,6 +49,7 @@ data class AppSettings(
     val keyColor: Int,
     val paletteStyle: PaletteStyle,
     val colorSpec: ColorSpec.SpecVersion,
+    val liquidGlass: Boolean = true,
 )
 
 val PaletteStyle.supportsSpec2025: Boolean
