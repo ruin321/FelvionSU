@@ -173,10 +173,6 @@ class SettingsRepositoryImpl : SettingsRepository {
         get() = prefs.getBoolean("liquid_glass", true)
         set(value) = prefs.edit { putBoolean("liquid_glass", value) }
 
-    override var liquidGlass: Boolean
-        get() = prefs.getBoolean("liquid_glass", true)
-        set(value) = prefs.edit { putBoolean("liquid_glass", value) }
-
     override val intentToken: String
         get() {
         val existing = prefs.getString(INTENT_TOKEN_KEY, null)
