@@ -169,6 +169,10 @@ class SettingsRepositoryImpl : SettingsRepository {
         get() = prefs.getBoolean(KEY_USE_SOFT_REBOOT, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_SOFT_REBOOT, value) }
 
+    override var liquidGlass: Boolean
+        get() = prefs.getBoolean("liquid_glass", true)
+        set(value) = prefs.edit { putBoolean("liquid_glass", value) }
+
     override val intentToken: String
         get() {
         val existing = prefs.getString(INTENT_TOKEN_KEY, null)
