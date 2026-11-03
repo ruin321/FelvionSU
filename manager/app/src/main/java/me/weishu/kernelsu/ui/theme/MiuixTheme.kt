@@ -79,6 +79,7 @@ fun MiuixKernelSUTheme(
             MonetColorsProvider.UpdateCss()
             CompositionLocalProvider(
                 LocalContentColor provides MiuixTheme.colorScheme.onBackground,
+                LocalLiquidGlass provides appSettings.liquidGlass,
             ) {
                 content()
             }
