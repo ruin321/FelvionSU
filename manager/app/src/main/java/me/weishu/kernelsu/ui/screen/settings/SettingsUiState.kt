@@ -84,5 +84,6 @@ data class SettingsScreenActions(
     val onSetEnableWebDebugging: (Boolean) -> Unit,
     val onSetAutoJailbreak: (Boolean) -> Unit,
     val onSetUseSoftReboot: (Boolean) -> Unit,
+    val onSetLiquidGlass: (Boolean) -> Unit,
     val onOpenAbout: () -> Unit,
 )
