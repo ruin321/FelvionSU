@@ -376,4 +376,6 @@
     <string name="script_param_above_max">Must be at most %d</string>
     <string name="script_param_invalid">Invalid value</string>
     <string name="app_name">FélvionSU</string>
+    <string name="settings_liquid_glass">Liquid Glass</string>
+    <string name="settings_liquid_glass_summary">Enable liquid glass blur effect on UI</string>
 </resources>
