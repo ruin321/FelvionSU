@@ -13,6 +13,7 @@ interface SettingsRepository {
     var enableSwipeDismiss: Boolean
     var pagerInterceptionMode: Int
     var enableBlur: Boolean
+    var liquidGlass: Boolean
     var enableFloatingBottomBar: Boolean
     var enableFloatingBottomBarBlur: Boolean
     var enableNavigationBadge: Boolean

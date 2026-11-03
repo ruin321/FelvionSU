@@ -2,6 +2,10 @@ package me.weishu.kernelsu.ui.screen.about
 
 import android.os.Build
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.gestures.detectTapGestures
+import android.media.AudioManager
+import android.media.ToneGenerator
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -363,6 +367,37 @@ private fun AboutContent(
                 text = state.versionName,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
+            )
+
+            // Eilly interactive image
+            var isPressed by remember { mutableStateOf(false) }
+            val audioManager = LocalContext.current.getSystemService(android.content.Context.AUDIO_SERVICE) as AudioManager
+            val pressSound = remember { android.media.SoundPool.Builder().setMaxStreams(1).build().apply {
+                load(me.weishu.kernelsu.R.raw.egg_press, 1)
+            } }
+            val releaseSound = remember { android.media.SoundPool.Builder().setMaxStreams(1).build().apply {
+                load(me.weishu.kernelsu.R.raw.egg_release, 1)
+            } }
+
+            Image(
+                painter = painterResource(id = me.weishu.kernelsu.R.drawable.eilly),
+                contentDescription = "Eilly",
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .size(80.dp)
+                    .graphicsLayer {
+                        scaleX = if (isPressed) 0.8f else 1f
+                        scaleY = if (isPressed) 0.6f else 1f
+                    }
+                    .detectTapGestures(
+                        onPress = {
+                            isPressed = true
+                            pressSound.play(1, 1f, 1f, 0, 0, 1f)
+                            val released = tryAwaitRelease()
+                            isPressed = false
+                            releaseSound.play(1, 1f, 1f, 0, 0, 1f)
+                        }
+                    )
             )
         }
 

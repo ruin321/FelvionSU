@@ -53,6 +53,7 @@ fun BottomBarMiuix(
     val mainState = LocalMainPagerState.current
     val enableFloatingBottomBar = LocalEnableFloatingBottomBar.current
     val enableFloatingBottomBarBlur = LocalEnableFloatingBottomBarBlur.current
+    val liquidGlass = LocalLiquidGlass.current
 
     val items = BottomBarDestination.entries.map { destination ->
         NavigationItem(
