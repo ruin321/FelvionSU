@@ -61,7 +61,10 @@ data class SettingsUiState(
     val autoJailbreak: Boolean = false,
 
     // Soft Reboot
-    val useSoftReboot: Boolean = false
+    val useSoftReboot: Boolean = false,
+
+    // Liquid Glass
+    val liquidGlass: Boolean = true
 )
 
 @Immutable
