@@ -369,27 +369,13 @@ private fun AboutContent(
                 textAlign = TextAlign.Center,
             )
 
-            // Eilly interactive image
-            var isPressed by remember { mutableStateOf(false) }
+            // Eilly image
             Image(
                 painter = painterResource(id = me.weishu.kernelsu.R.drawable.eilly),
                 contentDescription = "Eilly",
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .size(80.dp)
-                    .graphicsLayer {
-                        scaleX = if (isPressed) 0.8f else 1f
-                        scaleY = if (isPressed) 0.6f else 1f
-                    }
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onPress = {
-                                isPressed = true
-                                val released = tryAwaitRelease()
-                                isPressed = false
-                            }
-                        )
-                    }
             )
         }
 
