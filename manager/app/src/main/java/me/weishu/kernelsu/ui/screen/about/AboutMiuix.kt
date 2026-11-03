@@ -1,7 +1,10 @@
 package me.weishu.kernelsu.ui.screen.about
 
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.Build
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,6 +31,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -41,12 +45,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -110,6 +115,28 @@ fun AboutScreenMiuix(
 
     val enableBlur = LocalEnableBlur.current
     val barBlurBackdrop = rememberBlurBackdrop(enableBlur)
+
+    // Easter egg sounds for the eilly artwork
+    val context = LocalContext.current
+    val eggSounds = remember {
+        SoundPool.Builder()
+            .setMaxStreams(2)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            )
+            .build()
+    }
+    val eggSoundIds = remember { IntArray(2) }
+    LaunchedEffect(eggSounds) {
+        eggSoundIds[0] = eggSounds.load(context.applicationContext, R.raw.egg_press, 1)
+        eggSoundIds[1] = eggSounds.load(context.applicationContext, R.raw.egg_release, 1)
+    }
+    DisposableEffect(eggSounds) {
+        onDispose { eggSounds.release() }
+    }
     val blurActive = barBlurBackdrop != null && scrollProgress == 1f
     val barColor = if (blurActive) {
         Color.Transparent
@@ -295,22 +322,8 @@ private fun AboutContent(
                     },
             ) {
                 Image(
-                    modifier = Modifier
-                        .requiredSize(245.dp)
-                        .then(
-                            if (enableBlur) {
-                                Modifier.textureBlur(
-                                    backdrop = backdrop,
-                                    shape = RoundedCornerShape(0.dp),
-                                    blurRadius = 150f,
-                                    colors = BlurColors(blendColors = logoBlend),
-                                    contentBlendMode = ComposeBlendMode.DstIn,
-                                    enabled = true,
-                                )
-                            } else Modifier
-                        ),
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    colorFilter = ColorFilter.tint(colorScheme.onBackground),
+                    modifier = Modifier.requiredSize(96.dp),
+                    painter = painterResource(id = R.drawable.felvion_logo),
                     contentDescription = null,
                 )
             }
@@ -370,6 +383,15 @@ private fun AboutContent(
                 modifier = Modifier
                     .padding(top = 18.dp)
                     .size(84.dp)
+                    .pointerInput(eggSounds) {
+                        detectTapGestures(
+                            onPress = {
+                                eggSounds.play(eggSoundIds[0], 1f, 1f, 1, 0, 1f)
+                                tryAwaitRelease()
+                                eggSounds.play(eggSoundIds[1], 1f, 1f, 1, 0, 1f)
+                            }
+                        )
+                    }
             )
         }
 

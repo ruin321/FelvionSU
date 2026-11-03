@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import me.weishu.kernelsu.ui.theme.LocalLiquidGlass
 import top.yukonga.miuix.kmp.blur.BlendColorEntry
 import top.yukonga.miuix.kmp.blur.BlurColors
 import top.yukonga.miuix.kmp.blur.LayerBackdrop
@@ -14,13 +15,22 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun rememberBlurBackdrop(enableBlur: Boolean): LayerBackdrop? {
-    if (!enableBlur || !isRenderEffectSupported()) return null
+    val liquidGlass = LocalLiquidGlass.current
+    if (!(enableBlur || liquidGlass) || !isRenderEffectSupported()) return null
     val surfaceColor = MiuixTheme.colorScheme.surface
     return rememberLayerBackdrop {
         drawRect(surfaceColor)
         drawContent()
     }
 }
+
+/**
+ * Blurred backdrop for liquid glass surfaces, or null when the liquid glass
+ * setting is disabled so that every caller falls back to its original style.
+ */
+@Composable
+fun rememberGlassBackdrop(backdrop: LayerBackdrop?): LayerBackdrop? =
+    if (LocalLiquidGlass.current) backdrop else null
 
 @Composable
 fun BlurredBar(

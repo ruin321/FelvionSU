@@ -68,6 +68,8 @@ import me.weishu.kernelsu.ui.component.AppIconImage
 import me.weishu.kernelsu.ui.component.ListPopupDefaults
 import me.weishu.kernelsu.ui.component.ScrollToTopOnChange
 import me.weishu.kernelsu.ui.component.SearchStatus
+import me.weishu.kernelsu.ui.component.liquid.glassCardColor
+import me.weishu.kernelsu.ui.component.liquid.glassSurface
 import me.weishu.kernelsu.ui.component.miuix.SearchBarFake
 import me.weishu.kernelsu.ui.component.miuix.SearchBox
 import me.weishu.kernelsu.ui.component.miuix.SearchPager
@@ -77,9 +79,11 @@ import me.weishu.kernelsu.ui.theme.isInDarkTheme
 import me.weishu.kernelsu.ui.util.BlurredBar
 import me.weishu.kernelsu.ui.util.ownerNameForUid
 import me.weishu.kernelsu.ui.util.rememberBlurBackdrop
+import me.weishu.kernelsu.ui.util.rememberGlassBackdrop
 import me.weishu.kernelsu.ui.viewmodel.AppSortType
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.DropdownImpl
 import top.yukonga.miuix.kmp.basic.HorizontalDivider
 import top.yukonga.miuix.kmp.basic.Icon
@@ -92,6 +96,7 @@ import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
+import top.yukonga.miuix.kmp.blur.LayerBackdrop
 import top.yukonga.miuix.kmp.blur.layerBackdrop
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.basic.ArrowRight
@@ -119,6 +124,7 @@ fun SuperUserPagerMiuix(
     }
 
     val backdrop = rememberBlurBackdrop(enableBlur)
+    val glassBackdrop = rememberGlassBackdrop(backdrop)
     val blurActive = backdrop != null
     val barColor = if (blurActive) Color.Transparent else colorScheme.surface
 
@@ -318,6 +324,7 @@ fun SuperUserPagerMiuix(
                                     GroupItem(
                                         group = group,
                                         onToggleExpand = {},
+                                        glassBackdrop = glassBackdrop,
                                     ) {
                                         actions.onOpenProfile(group)
                                     }
@@ -328,7 +335,7 @@ fun SuperUserPagerMiuix(
                                     ) {
                                         Column {
                                             group.apps.forEach { app ->
-                                                SimpleAppItem(app = app)
+                                                SimpleAppItem(app = app, glassBackdrop = glassBackdrop)
                                             }
                                             Spacer(Modifier.height(6.dp))
                                         }
@@ -362,6 +369,7 @@ fun SuperUserPagerMiuix(
                             Column {
                                 GroupItem(
                                     group = group,
+                                    glassBackdrop = glassBackdrop,
                                     onToggleExpand = {
                                         if (group.apps.size > 1) {
                                             expandedSearchUids.value =
@@ -381,6 +389,7 @@ fun SuperUserPagerMiuix(
                                             SimpleAppItem(
                                                 app = app,
                                                 matched = group.matchedPackageNames.contains(app.packageName),
+                                                glassBackdrop = glassBackdrop,
                                             )
                                         }
                                         Spacer(Modifier.height(6.dp))
@@ -454,6 +463,7 @@ fun SuperUserPagerMiuix(
                             Column {
                                 GroupItem(
                                     group = group,
+                                    glassBackdrop = glassBackdrop,
                                     onToggleExpand = {
                                         if (group.apps.size > 1) {
                                             expandedUids.value =
@@ -470,7 +480,7 @@ fun SuperUserPagerMiuix(
                                 ) {
                                     Column {
                                         group.apps.forEach { app ->
-                                            SimpleAppItem(app = app)
+                                            SimpleAppItem(app = app, glassBackdrop = glassBackdrop)
                                         }
                                         Spacer(Modifier.height(6.dp))
                                     }
@@ -491,6 +501,7 @@ fun SuperUserPagerMiuix(
 private fun SimpleAppItem(
     app: AppInfo,
     matched: Boolean = false,
+    glassBackdrop: LayerBackdrop? = null,
 ) {
     Row {
         Box(
@@ -505,6 +516,8 @@ private fun SimpleAppItem(
         Card(
             modifier = Modifier
                 .padding(start = 6.dp, end = 12.dp, bottom = 6.dp)
+                .glassSurface(glassBackdrop),
+            colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
         ) {
             BasicComponent(
                 title = app.label,
@@ -529,6 +542,7 @@ private fun GroupItem(
     group: GroupedApps,
     onToggleExpand: () -> Unit,
     onClickPrimary: () -> Unit,
+    glassBackdrop: LayerBackdrop? = null,
 ) {
     val isInDarkTheme = isInDarkTheme()
     val bg = colorScheme.secondaryContainer.copy(alpha = 0.8f)
@@ -550,7 +564,9 @@ private fun GroupItem(
     Card(
         modifier = Modifier
             .padding(horizontal = 12.dp)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 12.dp)
+            .glassSurface(glassBackdrop),
+        colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
         onClick = onClickPrimary,
         onLongPress = if (group.apps.size > 1) onToggleExpand else null,
         showIndication = true,

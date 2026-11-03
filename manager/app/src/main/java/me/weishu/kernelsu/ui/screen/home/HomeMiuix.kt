@@ -48,6 +48,8 @@ import me.weishu.kernelsu.Natives
 import me.weishu.kernelsu.R
 import me.weishu.kernelsu.ui.component.WarningLevel
 import me.weishu.kernelsu.ui.component.dialog.rememberConfirmDialog
+import me.weishu.kernelsu.ui.component.liquid.glassCardColor
+import me.weishu.kernelsu.ui.component.liquid.glassSurface
 import me.weishu.kernelsu.ui.component.miuix.WarningCard
 import me.weishu.kernelsu.ui.component.rebootlistpopup.RebootListPopupMiuix
 import me.weishu.kernelsu.ui.theme.LocalEnableBlur
@@ -55,6 +57,7 @@ import me.weishu.kernelsu.ui.theme.isInDarkTheme
 import me.weishu.kernelsu.ui.util.BlurredBar
 import me.weishu.kernelsu.ui.util.module.LatestVersionInfo
 import me.weishu.kernelsu.ui.util.rememberBlurBackdrop
+import me.weishu.kernelsu.ui.util.rememberGlassBackdrop
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
@@ -86,6 +89,7 @@ fun HomePagerMiuix(
     val scrollBehavior = MiuixScrollBehavior()
     val enableBlur = LocalEnableBlur.current
     val backdrop = rememberBlurBackdrop(enableBlur)
+    val glassBackdrop = rememberGlassBackdrop(backdrop)
     val blurActive = backdrop != null
     val barColor = if (blurActive) Color.Transparent else colorScheme.surface
     Scaffold(
@@ -172,8 +176,8 @@ fun HomePagerMiuix(
                             actions = actions,
                         )
                         InfoCard(systemInfo = state.systemInfo)
-                        DonateCard(onOpenUrl = actions.onOpenUrl)
-                        LearnMoreCard(onOpenUrl = actions.onOpenUrl)
+                        DonateCard(onOpenUrl = actions.onOpenUrl, glassBackdrop = glassBackdrop)
+                        LearnMoreCard(onOpenUrl = actions.onOpenUrl, glassBackdrop = glassBackdrop)
                         Spacer(Modifier.height(bottomInnerPadding))
                     }
                 }
@@ -408,9 +412,15 @@ private fun StatusCard(
 @Composable
 private fun LearnMoreCard(
     onOpenUrl: (String) -> Unit,
+    glassBackdrop: LayerBackdrop? = null,
 ) {
     val url = stringResource(R.string.home_learn_kernelsu_url)
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .glassSurface(glassBackdrop),
+        colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+    ) {
         BasicComponent(
             title = stringResource(R.string.home_learn_kernelsu),
             summary = stringResource(R.string.home_click_to_learn_kernelsu),
@@ -427,8 +437,16 @@ private fun LearnMoreCard(
 }
 
 @Composable
-private fun DonateCard(onOpenUrl: (String) -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+private fun DonateCard(
+    onOpenUrl: (String) -> Unit,
+    glassBackdrop: LayerBackdrop? = null,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .glassSurface(glassBackdrop),
+        colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+    ) {
         BasicComponent(
             title = stringResource(R.string.home_support_title),
             summary = stringResource(R.string.home_support_content),
