@@ -339,6 +339,11 @@ class SettingsViewModel(
         _uiState.update { it.copy(useSoftReboot = enabled) }
     }
 
+    fun setLiquidGlass(enabled: Boolean) {
+        repo.liquidGlass = enabled
+        _uiState.update { it.copy(liquidGlass = enabled) }
+    }
+
     fun setSulogEnabled(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             if (repo.setSulogEnabled(enabled)) {
