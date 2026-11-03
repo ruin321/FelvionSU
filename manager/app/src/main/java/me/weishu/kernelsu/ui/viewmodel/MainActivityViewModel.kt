@@ -64,6 +64,7 @@ class MainActivityViewModel(
             "enable_blur",
             "enable_floating_bottom_bar",
             "enable_floating_bottom_bar_blur",
+            "liquid_glass",
             "enable_navigation_badge",
             "ui_mode",
         )

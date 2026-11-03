@@ -30,6 +30,7 @@ import androidx.compose.material.icons.rounded.RemoveCircle
 import androidx.compose.material.icons.rounded.RemoveModerator
 import androidx.compose.material.icons.rounded.Update
 import androidx.compose.material.icons.rounded.UploadFile
+import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -175,12 +176,26 @@ fun SettingPagerMiuix(
                             },
                             onClick = actions.onOpenTheme
                         )
+                        SwitchPreference(
+                            title = stringResource(id = R.string.settings_liquid_glass),
+                            summary = stringResource(id = R.string.settings_liquid_glass_summary),
+                            startAction = {
+                                Icon(
+                                    Icons.Rounded.WaterDrop,
+                                    modifier = Modifier.padding(end = 6.dp),
+                                    contentDescription = stringResource(id = R.string.settings_liquid_glass),
+                                    tint = colorScheme.onBackground
+                                )
+                            },
+                            checked = uiState.liquidGlass,
+                            onCheckedChange = actions.onSetLiquidGlass
+                        )
                     }
 
                     KsuIsValid {
                         Card(
                             modifier = Modifier
-                                .padding(top = 12.dp)
+                                .padding(top = 16.dp)
                                 .fillMaxWidth(),
                         ) {
                             val profileTemplate = stringResource(id = R.string.settings_profile_template)
@@ -203,7 +218,7 @@ fun SettingPagerMiuix(
                     KsuIsValid {
                         Card(
                             modifier = Modifier
-                                .padding(top = 12.dp)
+                                .padding(top = 16.dp)
                                 .fillMaxWidth(),
                         ) {
                             val suCompatModeItems = listOf(
@@ -321,7 +336,7 @@ fun SettingPagerMiuix(
 
                         Card(
                             modifier = Modifier
-                                .padding(top = 12.dp)
+                                .padding(top = 16.dp)
                                 .fillMaxWidth(),
                         ) {
                             SwitchPreference(
@@ -374,7 +389,7 @@ fun SettingPagerMiuix(
                     if (uiState.isLkmMode) {
                         Card(
                             modifier = Modifier
-                                .padding(top = 12.dp)
+                                .padding(top = 16.dp)
                                 .fillMaxWidth(),
                         ) {
                             val uninstall = stringResource(id = R.string.settings_uninstall)

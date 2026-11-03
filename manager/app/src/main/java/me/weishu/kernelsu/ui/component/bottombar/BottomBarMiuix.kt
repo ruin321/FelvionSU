@@ -29,6 +29,7 @@ import me.weishu.kernelsu.ui.component.FloatingBottomBar
 import me.weishu.kernelsu.ui.component.FloatingBottomBarItem
 import me.weishu.kernelsu.ui.theme.LocalEnableFloatingBottomBar
 import me.weishu.kernelsu.ui.theme.LocalEnableFloatingBottomBarBlur
+import me.weishu.kernelsu.ui.theme.LocalLiquidGlass
 import me.weishu.kernelsu.ui.util.BlurredBar
 import me.weishu.kernelsu.ui.util.rootAvailable
 import top.yukonga.miuix.kmp.basic.Badge
@@ -56,6 +57,8 @@ fun BottomBarMiuix(
     val mainState = LocalMainPagerState.current
     val enableFloatingBottomBar = LocalEnableFloatingBottomBar.current
     val enableFloatingBottomBarBlur = LocalEnableFloatingBottomBarBlur.current
+    val liquidGlass = LocalLiquidGlass.current
+    val blurActive = liquidGlass && blurBackdrop != null
 
     val items = BottomBarDestination.entries.map { destination ->
         NavigationItem(
@@ -64,10 +67,10 @@ fun BottomBarMiuix(
         )
     }
     if (!enableFloatingBottomBar) {
-        BlurredBar(blurBackdrop) {
+        BlurredBar(blurBackdrop, blurActive = liquidGlass) {
             NavigationBar(
                 modifier = modifier,
-                color = if (blurBackdrop != null) Color.Transparent else MiuixTheme.colorScheme.surface,
+                color = if (blurActive) Color.Transparent else MiuixTheme.colorScheme.surface,
                 content = {
                     items.forEachIndexed { index, item ->
                         NavigationBarItem(
@@ -97,14 +100,14 @@ fun BottomBarMiuix(
             onSelected = { mainState.animateToPage(it) },
             backdrop = backdrop,
             tabsCount = items.size,
-            isBlurEnabled = enableFloatingBottomBarBlur,
+            isBlurEnabled = enableFloatingBottomBarBlur && liquidGlass,
         ) {
             items.forEachIndexed { index, item ->
                 FloatingBottomBarItem(
                     onClick = {
                         mainState.animateToPage(index)
                     },
-                    modifier = Modifier.defaultMinSize(minWidth = 76.dp)
+                    modifier = Modifier.defaultMinSize(minWidth = 76.dp, minHeight = 48.dp)
                 ) {
                     // Icon and label take LocalContentColor so the FloatingBottomBar backdrop copy
                     // can recolor them to the accent tone inside the indicator pill.

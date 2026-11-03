@@ -364,6 +364,13 @@ private fun AboutContent(
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
             )
+            Image(
+                painter = painterResource(id = R.drawable.eilly),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(top = 18.dp)
+                    .size(84.dp)
+            )
         }
 
         // Scrollable content

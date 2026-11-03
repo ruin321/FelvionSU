@@ -26,8 +26,7 @@ fun getGitDescribe(): String {
 }
 
 fun getVersionCode(): Int {
-    val commitCount = getGitCommitCount()
-    return 30000 + commitCount
+    return 32582 // pinned to match kernel ksuver (base aab6797 = v3.2.5-57)
 }
 
 fun getVersionName(): String {

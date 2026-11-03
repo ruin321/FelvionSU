@@ -51,7 +51,10 @@ data class SettingsUiState(
     val isLateLoadMode: Boolean = false,
 
     // Auto Jailbreak
-    val autoJailbreak: Boolean = false
+    val autoJailbreak: Boolean = false,
+
+    // Liquid Glass
+    val liquidGlass: Boolean = true
 )
 
 @Immutable
@@ -69,5 +72,6 @@ data class SettingsScreenActions(
     val onSetDefaultUmountModules: (Boolean) -> Unit,
     val onSetEnableWebDebugging: (Boolean) -> Unit,
     val onSetAutoJailbreak: (Boolean) -> Unit,
+    val onSetLiquidGlass: (Boolean) -> Unit,
     val onOpenAbout: () -> Unit,
 )
