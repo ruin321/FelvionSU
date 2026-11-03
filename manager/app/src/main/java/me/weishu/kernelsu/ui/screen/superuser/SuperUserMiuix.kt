@@ -541,8 +541,8 @@ private fun SimpleAppItem(
 private fun GroupItem(
     group: GroupedApps,
     onToggleExpand: () -> Unit,
-    onClickPrimary: () -> Unit,
     glassBackdrop: LayerBackdrop? = null,
+    onClickPrimary: () -> Unit,
 ) {
     val isInDarkTheme = isInDarkTheme()
     val bg = colorScheme.secondaryContainer.copy(alpha = 0.8f)

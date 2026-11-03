@@ -115,28 +115,6 @@ fun AboutScreenMiuix(
 
     val enableBlur = LocalEnableBlur.current
     val barBlurBackdrop = rememberBlurBackdrop(enableBlur)
-
-    // Easter egg sounds for the eilly artwork
-    val context = LocalContext.current
-    val eggSounds = remember {
-        SoundPool.Builder()
-            .setMaxStreams(2)
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build()
-            )
-            .build()
-    }
-    val eggSoundIds = remember { IntArray(2) }
-    LaunchedEffect(eggSounds) {
-        eggSoundIds[0] = eggSounds.load(context.applicationContext, R.raw.egg_press, 1)
-        eggSoundIds[1] = eggSounds.load(context.applicationContext, R.raw.egg_release, 1)
-    }
-    DisposableEffect(eggSounds) {
-        onDispose { eggSounds.release() }
-    }
     val blurActive = barBlurBackdrop != null && scrollProgress == 1f
     val barColor = if (blurActive) {
         Color.Transparent
@@ -203,6 +181,28 @@ private fun AboutContent(
     val density = LocalDensity.current
 
     val backdrop = rememberLayerBackdrop()
+
+    // Easter egg sounds for the eilly artwork
+    val context = LocalContext.current
+    val eggSounds = remember {
+        SoundPool.Builder()
+            .setMaxStreams(2)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            )
+            .build()
+    }
+    val eggSoundIds = remember { IntArray(2) }
+    LaunchedEffect(eggSounds) {
+        eggSoundIds[0] = eggSounds.load(context.applicationContext, R.raw.egg_press, 1)
+        eggSoundIds[1] = eggSounds.load(context.applicationContext, R.raw.egg_release, 1)
+    }
+    DisposableEffect(eggSounds) {
+        onDispose { eggSounds.release() }
+    }
 
     val isInDark = isInDarkTheme()
     val enableBlur = LocalEnableBlur.current
