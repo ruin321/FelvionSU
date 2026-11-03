@@ -78,7 +78,7 @@ class SettingsRepositoryImpl : SettingsRepository {
         set(value) = prefs.edit { putBoolean("enable_floating_bottom_bar_blur", value) }
 
     override var liquidGlass: Boolean
-        get() = prefs.getBoolean("liquid_glass", true)
+        get() = prefs.getBoolean("liquid_glass", false)
         set(value) = prefs.edit { putBoolean("liquid_glass", value) }
 
     override var enableNavigationBadge: Boolean

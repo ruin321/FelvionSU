@@ -24,14 +24,6 @@ fun rememberBlurBackdrop(enableBlur: Boolean): LayerBackdrop? {
     }
 }
 
-/**
- * Blurred backdrop for liquid glass surfaces, or null when the liquid glass
- * setting is disabled so that every caller falls back to its original style.
- */
-@Composable
-fun rememberGlassBackdrop(backdrop: LayerBackdrop?): LayerBackdrop? =
-    if (LocalLiquidGlass.current) backdrop else null
-
 @Composable
 fun BlurredBar(
     backdrop: LayerBackdrop?,

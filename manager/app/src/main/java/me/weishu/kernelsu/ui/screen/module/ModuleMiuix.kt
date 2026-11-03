@@ -130,7 +130,6 @@ import me.weishu.kernelsu.ui.util.BlurredBar
 import me.weishu.kernelsu.ui.util.getFileName
 import me.weishu.kernelsu.ui.util.reboot
 import me.weishu.kernelsu.ui.util.rememberBlurBackdrop
-import me.weishu.kernelsu.ui.util.rememberGlassBackdrop
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
@@ -154,8 +153,6 @@ import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
-import top.yukonga.miuix.kmp.blur.LayerBackdrop
-import top.yukonga.miuix.kmp.blur.layerBackdrop
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.Delete
 import top.yukonga.miuix.kmp.icon.extended.Download
@@ -303,7 +300,6 @@ fun ModulePagerMiuix(
     )
 
     val backdrop = rememberBlurBackdrop(enableBlur)
-    val glassBackdrop = rememberGlassBackdrop(backdrop)
     val blurActive = backdrop != null
     val barColor = if (blurActive) Color.Transparent else colorScheme.surface
 
@@ -485,7 +481,6 @@ fun ModulePagerMiuix(
                         .fillMaxSize()
                         .overScrollVertical(),
                     modules = uiState.searchResults,
-                    glassBackdrop = glassBackdrop,
                     updateInfoMap = uiState.updateInfo,
                     actions = actions,
                     onModuleAddShortcut = ::onModuleAddShortcut,
@@ -591,7 +586,6 @@ fun ModulePagerMiuix(
                                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                                 .nestedScroll(nestedScrollConnection),
                             modules = modules,
-                            glassBackdrop = glassBackdrop,
                             updateInfoMap = uiState.updateInfo,
                             actions = actions,
                             onModuleAddShortcut = { module, type ->
@@ -747,7 +741,6 @@ private fun ModuleShortcutDialog(
 private fun ModuleList(
     modifier: Modifier = Modifier,
     modules: List<Module>,
-    glassBackdrop: LayerBackdrop? = null,
     updateInfoMap: Map<String, ModuleUpdateInfo>,
     actions: ModuleActions,
     onModuleAddShortcut: (Module, ShortcutType) -> Unit,
@@ -773,7 +766,6 @@ private fun ModuleList(
                 ModuleItem(
                     module = module,
                     updateUrl = moduleUpdateInfo.downloadUrl,
-                    glassBackdrop = glassBackdrop,
                     onUninstall = {
                         actions.onRequestUninstallConfirmation(currentModuleState.value)
                     },
@@ -827,7 +819,6 @@ fun ModuleItem(
     onExecuteAction: () -> Unit,
     onAddActionShortcut: (ShortcutType) -> Unit,
     onOpenWebUi: () -> Unit,
-    glassBackdrop: LayerBackdrop? = null
 ) {
     val secondaryContainer = colorScheme.secondaryContainer.copy(alpha = 0.8f)
     val actionIconTint = colorScheme.onSurface.copy(alpha = if (isInDarkTheme()) 0.7f else 0.9f)
@@ -842,8 +833,8 @@ fun ModuleItem(
         modifier = Modifier
             .padding(horizontal = 12.dp)
             .padding(bottom = 16.dp)
-            .glassSurface(glassBackdrop),
-        colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+            .glassSurface(),
+        colors = CardDefaults.defaultColors(color = glassCardColor()),
         insideMargin = PaddingValues(16.dp),
         onClick = {
             if (hasDescription) expanded = !expanded

@@ -54,7 +54,7 @@ data class SettingsUiState(
     val autoJailbreak: Boolean = false,
 
     // Liquid Glass
-    val liquidGlass: Boolean = true
+    val liquidGlass: Boolean = false
 )
 
 @Immutable

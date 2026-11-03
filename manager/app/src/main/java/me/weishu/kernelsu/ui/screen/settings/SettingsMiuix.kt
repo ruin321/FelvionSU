@@ -51,7 +51,6 @@ import me.weishu.kernelsu.ui.component.uninstalldialog.UninstallDialog
 import me.weishu.kernelsu.ui.theme.LocalEnableBlur
 import me.weishu.kernelsu.ui.util.BlurredBar
 import me.weishu.kernelsu.ui.util.rememberBlurBackdrop
-import me.weishu.kernelsu.ui.util.rememberGlassBackdrop
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.CardDefaults
 import top.yukonga.miuix.kmp.basic.Icon
@@ -79,7 +78,6 @@ fun SettingPagerMiuix(
     val scrollBehavior = MiuixScrollBehavior()
     val enableBlur = LocalEnableBlur.current
     val backdrop = rememberBlurBackdrop(enableBlur)
-    val glassBackdrop = rememberGlassBackdrop(backdrop)
     val blurActive = backdrop != null
     val barColor = if (blurActive) Color.Transparent else colorScheme.surface
     val loadingDialog = rememberLoadingDialog()
@@ -115,8 +113,8 @@ fun SettingPagerMiuix(
                         modifier = Modifier
                             .padding(top = 16.dp)
                             .fillMaxWidth()
-                            .glassSurface(glassBackdrop),
-                        colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+                            .glassSurface(),
+                        colors = CardDefaults.defaultColors(color = glassCardColor()),
                     ) {
                         SwitchPreference(
                             title = stringResource(id = R.string.settings_check_update),
@@ -154,8 +152,8 @@ fun SettingPagerMiuix(
                         modifier = Modifier
                             .padding(top = 16.dp)
                             .fillMaxWidth()
-                            .glassSurface(glassBackdrop),
-                        colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+                            .glassSurface(),
+                        colors = CardDefaults.defaultColors(color = glassCardColor()),
                     ) {
                         OverlayDropdownPreference(
                             title = stringResource(id = R.string.settings_ui_mode),
@@ -206,8 +204,8 @@ fun SettingPagerMiuix(
                             modifier = Modifier
                                 .padding(top = 16.dp)
                                 .fillMaxWidth()
-                                .glassSurface(glassBackdrop),
-                            colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+                                .glassSurface(),
+                            colors = CardDefaults.defaultColors(color = glassCardColor()),
                         ) {
                             val profileTemplate = stringResource(id = R.string.settings_profile_template)
                             ArrowPreference(
@@ -231,8 +229,8 @@ fun SettingPagerMiuix(
                             modifier = Modifier
                                 .padding(top = 16.dp)
                                 .fillMaxWidth()
-                                .glassSurface(glassBackdrop),
-                            colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+                                .glassSurface(),
+                            colors = CardDefaults.defaultColors(color = glassCardColor()),
                         ) {
                             val suCompatModeItems = listOf(
                                 stringResource(id = R.string.settings_mode_enable_by_default),
@@ -351,8 +349,8 @@ fun SettingPagerMiuix(
                             modifier = Modifier
                                 .padding(top = 16.dp)
                                 .fillMaxWidth()
-                                .glassSurface(glassBackdrop),
-                            colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+                                .glassSurface(),
+                            colors = CardDefaults.defaultColors(color = glassCardColor()),
                         ) {
                             SwitchPreference(
                                 title = stringResource(id = R.string.settings_umount_modules_default),
@@ -406,8 +404,8 @@ fun SettingPagerMiuix(
                             modifier = Modifier
                                 .padding(top = 16.dp)
                                 .fillMaxWidth()
-                                .glassSurface(glassBackdrop),
-                            colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+                                .glassSurface(),
+                            colors = CardDefaults.defaultColors(color = glassCardColor()),
                         ) {
                             val uninstall = stringResource(id = R.string.settings_uninstall)
                             ArrowPreference(
@@ -434,8 +432,8 @@ fun SettingPagerMiuix(
                         modifier = Modifier
                             .padding(vertical = 16.dp)
                             .fillMaxWidth()
-                            .glassSurface(glassBackdrop),
-                        colors = CardDefaults.defaultColors(color = glassCardColor(glassBackdrop)),
+                            .glassSurface(),
+                        colors = CardDefaults.defaultColors(color = glassCardColor()),
                     ) {
                         ArrowPreference(
                             title = stringResource(id = R.string.send_log),

@@ -49,7 +49,7 @@ data class AppSettings(
     val keyColor: Int,
     val paletteStyle: PaletteStyle,
     val colorSpec: ColorSpec.SpecVersion,
-    val liquidGlass: Boolean = true,
+    val liquidGlass: Boolean = false,
 )
 
 val PaletteStyle.supportsSpec2025: Boolean
@@ -141,4 +141,4 @@ val LocalEnableFloatingBottomBarBlur = staticCompositionLocalOf { false }
 
 val LocalEnableNavigationBadge = staticCompositionLocalOf { true }
 
-val LocalLiquidGlass = staticCompositionLocalOf { true }
+val LocalLiquidGlass = staticCompositionLocalOf { false }
