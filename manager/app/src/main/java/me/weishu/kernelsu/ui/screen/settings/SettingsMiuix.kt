@@ -361,6 +361,21 @@ fun SettingPagerMiuix(
                                 checked = uiState.isLateLoadMode || uiState.useSoftReboot,
                                 onCheckedChange = actions.onSetUseSoftReboot
                             )
+
+                            SwitchPreference(
+                                title = stringResource(id = R.string.settings_liquid_glass),
+                                summary = stringResource(id = R.string.settings_liquid_glass_summary),
+                                startAction = {
+                                    Icon(
+                                        Icons.Rounded.DisplaySettings,
+                                        modifier = Modifier.padding(end = 6.dp),
+                                        contentDescription = stringResource(id = R.string.settings_liquid_glass),
+                                        tint = colorScheme.onBackground
+                                    )
+                                },
+                                checked = uiState.liquidGlass,
+                                onCheckedChange = actions.onSetLiquidGlass
+                            )
                         }
 
                         Card(
